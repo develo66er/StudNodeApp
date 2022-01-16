@@ -1,0 +1,92 @@
+<%- include('layouts/head.ejs')%>
+<link rel="stylesheet" type="text/css" href="/../../public/css/tables.css">
+<link rel="stylesheet" type="text/css" href="/../../public/css/lists.css">
+
+<%- include('layouts/menu.ejs')%>
+<% if(professor){ %>
+<div class="student-message"> Ваши работы будет проверять : <b><%= professor.email %></b>
+  <span>
+    <a href="/unLinkProfessor/<%= id %>/<%= professor['id']%>">
+      отказаться от преподавателя
+    </a>
+  </span>
+</div>
+<div>
+  <% if(docs.length > 0) { %>
+
+  <table>
+    <tr>
+      <th colspan="3">Имя файла</th>
+      <th>Дата загрузки</th>
+      <th>Задача</th>
+      <th>Оценка</th>
+      <th>Результат проверки на антиплагиат(процент уникальности)</th>
+      <th></th>
+    </tr>
+
+    <% for(let n in docs){ %>
+    <% const tId=docs[n]['taskId'] %>
+    <% const t = tasks.filter(task=>task.id===tId)%>
+
+    <tr>
+      <td colspan="3"><%= docs[n]['name'] %></td>
+      <% const date  =new Date(docs[n]['createdAt'])%>
+      <td><%= date.getDate() %>/<%= date.getMonth() %>/<%= date.getFullYear() %> <%= date.getHours() %>:<%= date.getMinutes() %>:<%= date.getSeconds() %>
+      </td>
+      <td><a href="/download/<%=t[0].path %>"><%=t[0].description %></a></td>
+      <td><%= docs[n]['mark'] %></td>
+      <td><%= docs[n]['plagiate_score'] %>%</td>
+      <td>
+        <form action="/student/delete" method="POST">
+          <input type="hidden" name="docId" value="<%=docs[n].id %>"/>
+          <input type="submit" value="удалить" />
+        </form>
+      </td>
+    </tr>
+    <% } %>
+  </table>
+  <%} else{ %>
+  <p class="student-message">у вас еще нет загруженных документов</p>
+  <% } %>
+</div>
+
+<div>
+  <form action="/student/upload" method="post" enctype="multipart/form-data">
+    <label for="filedata">Файл : </label>
+    <input class="file-input" type="file" name="filedata" required><br><br>
+    <input type="hidden" value="<%= professor.id %>" name="professorId">
+    <label for="tasksSelect">Задача : </label>
+    <select name="tasksSelect">
+      <% for(let task of tasks){ %>
+      <option value="<%=task.id%>"><%=task.description%></option>
+      <% } %>
+    </select>
+    <input class="btn-submit" type="submit" value="Загрузить файл на сервер" />
+
+
+  </form>
+</div>
+
+<div>
+  <p class="student-message"><%=message%></p>
+</div>
+<% }else{ %>
+<% if(professors.length>0){ %>
+<p>Выберите преподавателя, который будет оценивать ваши работы</p>
+<div class="professors-list">
+  <ul>
+    <% for(let n in professors){ %>
+    <li>
+      <a href="/linkProfessor/<%= id %>/<%= professors[n]['id']%>">
+        <%= professors[n]['email'] %>
+      </a>
+    </li>
+    <% } %>
+  </ul>
+</div>
+
+<% } else { %>
+<p>в системе нет преподавателей</p>
+<% } %>
+<% } %>
+<%- include('layouts/footer.ejs')%>

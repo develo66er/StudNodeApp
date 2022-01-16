@@ -1,0 +1,33 @@
+<link rel="stylesheet" type="text/css" href="/../../public/css/menu.css">
+</head>
+
+<body>
+    <div class="main-menu-nav">
+        <ul class="menu-nav">
+            <li><a href="/">домашняя страница</a></li>
+            <% if(role==='s'){ %>
+            <li><a href="/student">студент</a></li>
+            <% } %>
+            <% if(role==='p'){ %>
+            <li><a href="/professor">преподаватель</a></li>
+            <% } %>
+        </ul>
+        <ul class="auth-items">
+            <% if(!isAutenticated){ %>
+            <li>
+                <a class="login-nav" href="/login">login</a>
+            </li>
+            <li>
+                <a class="login-nav" href="/signup">signup</a>
+            </li>
+            <% } else { %>
+            <li>
+                <form action="/logout" method="POST">
+                    <button type="submit">logout</button>
+                </form>
+            </li>
+            <% } %>
+        </ul>
+
+
+    </div>

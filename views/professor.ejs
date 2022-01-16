@@ -1,0 +1,136 @@
+<%- include('layouts/head.ejs')%>
+<link rel="stylesheet" type="text/css" href="/../../public/css/tables.css">
+<link rel="stylesheet" type="text/css" href="/../../public/css/lists.css">
+
+
+<%- include('layouts/menu.ejs')%>
+
+<div class="container">
+    <% if(tasks && tasks.length>0){ %>
+    <div class="row">
+        <div class="col-sm-12">
+            <select onchange="document.location.href = '/professor/' + this.value;">
+                <% for(let task of tasks) {%>
+                <option value="<%=task.id %>"
+                    <%=(currentTask && currentTask.length>0 && task.id==currentTask[0].id?' selected':'')%>>
+                    <%=task.description %></option>
+                <% } %>
+            </select>
+        </div>
+    </div>
+    <% } %>
+    <div class="row task">
+        <div class="col-sm-12">
+            <form action="/add/task" method="POST" enctype="multipart/form-data">
+                <label for="description">Описание :</label>
+                <input type="text" name="description" />
+                <label for="filedata">Загрузить файл задания :</label>
+                <input type="file" name="taskfile" required>
+                <input type="submit" value="Добавить задачу" />
+            </form>
+        </div>
+    </div>
+    <% let stfl = false %>
+    <% if(students.length>0 && currentTask && currentTask.length>0){ %>
+    <div class="row">
+        <div class="form col-sm-12">
+
+            <div>
+                <table>
+                    <tr>
+                        <th>Студент</th>
+                        <th>Файл</th>
+                        <th>Дата загрузки</th>
+                        <th>Оценка</th>
+                        <th>проверка на антиплагиат</th>
+                    </tr>
+                    <% for(let st of students) {%>
+                    <% if(st.documents!=undefined && st.documents!=null){ %>
+                    <% if(st.documents.length>0){ stfl = true;%>
+
+
+                    <% for(let document of st.documents){ %>
+                    <tr>
+                        <td><%=st.student.email%></td>
+
+                        <td><a href="/professor/download/<%= document.document['path'] %>"><%= document.document['name'] %></a>
+                        </td>
+                        <% const date  =new Date(document.document['createdAt'])%>
+                        <td><%= date.getDate() %>/<%= date.getMonth() %>/<%= date.getFullYear() %> <%= date.getHours() %>:<%= date.getMinutes() %>:<%= date.getSeconds() %>
+                        </td>
+                        <td>
+                            <% if(!document.document['mark']) {  %>
+                            <form action="/professor/mark" method="POST">
+                                <input type="hidden" name="student_id" value="<%= st.student['id'] %>" />
+                                <input type="hidden" name="document_id" value="<%= document.document['id'] %>" />
+
+                                <input type="number" max="10" min="0" name="mark" id="mark" value="0" />
+
+                                <input type="submit" value="оценить">
+                            </form>
+                            <% }else{ %>
+                            <p><%=document.document['mark']%>
+                            </p>
+                            <% } %>
+                        </td>
+                        <td><% if(!document.moss) {%>
+                            <form id="moss-form" action="/professor/plagiarism/check%>" method="post"
+                                enctype="multipart/form-data">
+                                <input type="hidden" name="student_id" value="<%= st.student['id'] %>" />
+                                <input type="hidden" name="document_id" value="<%= document.document['id'] %>" />
+                                <input type="hidden" name="task_id" value="<%= document.document['taskId'] %>" />
+
+                                <label class="file-data" for="filedata">Выбрать базовый файл : </label>
+                                <input class="file-input" type="file" name="filedata" required><br><br>
+                                <select class="select_lang" name="select_lang">
+                                </select>
+                                <input class="btn-submit" type="submit" value="Проверить работу" />
+                            </form>
+
+                            <% }else { %> <p>
+                                <%=document.document['plagiate_score']!=null && document.document['plagiate_score']!=undefined?document.document['plagiate_score'] : 'идет проверка по антиплагиату' %>
+                            </p>
+                            <a href="/professor/download/<%= document.moss['path'] %>"><%= document.moss['name'] %></a>
+                            <% } %></td>
+                    </tr>
+                    <% } %>
+
+                    <%}%>
+                       <% } %>
+
+                    <% } %>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+
+    <% } else { %>
+    <p class="message">У вас нет студентов</p>
+    <% } %>
+
+
+
+</div>
+</body>
+<script>
+
+
+    const languages = ["c", "cc", "java", "ml", "pascal", "ada", "lisp", "scheme", "haskell", "fortran", "ascii", "vhdl", "perl", "matlab", "python", "mips", "prolog", "spice", "vb", "csharp", "modula2", "a8086", "javascript", "plsql", "verilog"]
+    const selectLangFunc = () => {
+        let html = ' <option value="">выберите язык программирования</option>';
+        languages.forEach((lang) => {
+            html += `<option value="${lang}">${lang}</option>`;
+        });
+        return html;
+    }
+    [...document.getElementsByClassName('select_lang')].forEach(el => {
+        console.log(JSON.stringify(el));
+        el.innerHTML = selectLangFunc();
+    });
+
+
+</script>
+
+</html>

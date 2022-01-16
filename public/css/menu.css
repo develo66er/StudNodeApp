@@ -1,0 +1,53 @@
+.main-menu-nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+    background-color: rgba(5, 87, 62, 0.897);
+    margin-bottom: 30px;
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+    padding:20px;
+}
+.main-menu-nav ul{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    justify-content: space-between;
+}
+.main-menu-nav button{
+    background-color: transparent;
+    text-decoration: none;
+    color: rgb(231, 226, 226);
+    border:none;
+    font-size: 16px;
+    font-family: 'Times New Roman', Times, serif;
+}
+.main-menu-nav a{
+    text-decoration: none;
+    color: rgb(231, 226, 226);
+}
+.main-menu-nav a:hover,a:active{
+    color:rgb(13, 29, 2);
+}
+.main-menu-nav li:hover,button:hover{
+    background-color: rgba(122, 150, 124, 0.473)
+}
+.main-menu-nav li{    
+    display:inline;
+    padding-left:5px;
+    padding-right: 5px;
+}
+.main-menu-nav .auth-items{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-content: center;
+}
+.error{
+    padding: 20px;
+    margin: 20px;
+    color: brown;
+    font-size: 12px;
+
+}

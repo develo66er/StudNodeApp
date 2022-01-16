@@ -1,0 +1,42 @@
+<%- include('layouts/head.ejs')%>
+<link rel="stylesheet" type="text/css" href="/../../public/css/tables.css">
+
+<%- include('layouts/menu.ejs')%>
+
+<div class="container">
+    <diV style="color: rgb(6, 63, 14)"> 
+        <h3>Студент : <span style="font-weight: bold"><%= student.email%></span></h3></diV>
+   
+    <% if(documents!=undefined){ %>
+    <% if(documents.length>0){ %>
+    <a class="back-to-link" href="/professor">Назад к списку студентов</a>
+    <form action="/update/documents/details" method="POST">
+        <table>
+            <tr>
+                <th colspan="2">Имя файла</th>
+                <th>Оценка</th>
+                <th>проверка на антиплагиат</th>
+            </tr>
+            <% for(let k in documents){ %>
+            <tr>
+                <td><input type="hidden" name="id_<%= documents[k]['id'] %>" value="<%= documents[k]['id'] %>" /></td>
+                <td><a href="/download/<%= documents[k]['path'] %>"><%= documents[k]['name'] %></a></td>
+                <td><input type="number" max="10" min="0" name="mark_<%= documents[k]['id'] %>" id="mark"
+                        placeholder="<%= documents[k]['mark'] %>"></input></td>
+                <td><% if(documents[k]['plagiate_score']==undefined || documents[k]['plagiate_score'] == 0) {%>
+                    <input type="checkbox" name="check_<%= documents[k]['id'] %>" />проверить
+                    <% }else { %> <p><%=documents[k]['plagiate_score'] %></p> <% } %></td>
+            </tr>
+            <% } %>
+        </table>
+        <input class="detail-form-submit" type="submit" value="отправить" />
+    </form>
+
+    <%} else if (documents.length==0 ){ %>
+    <p>у студента еще нет загруженных документов</p>
+    <% } %>
+    <% } %>
+
+
+</div>
+<%- include('layouts/footer.ejs')%>

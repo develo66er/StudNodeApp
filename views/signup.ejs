@@ -1,0 +1,20 @@
+<%- include('layouts/head.ejs')%>
+<link rel="stylesheet" type="text/css" href="/../../public/css/forms.css">
+<%- include('layouts/menu.ejs')%>
+
+<form class="login-form" action="/signup" method="POST">
+    <label for="email"> Электронный адрес : </label>
+    <input class="login-form-item" type="email" name="email" id="email">
+    <label for="password"> Пароль : </label>
+    <input class="login-form-item" type="password" name="password" id="password">
+    <label for="confirmPssword"> Подтвердить пароль : </label>
+    <input class="login-form-item" type="password" name="confirmPssword" id="confirmPssword">
+    <label for="asProfessor">Я - профессор</label>
+    <input type="checkbox" name="asProfessor" id="asProfessor"/>
+    <button class="login-form-button" type="submit">Зарегистрироваться</button>
+    <% if(message){ %>
+        <div class="error"><%=message %></div>
+        <% } %>
+</form>
+
+<%- include('layouts/footer.ejs')%>
